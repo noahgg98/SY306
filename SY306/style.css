@@ -1,0 +1,37 @@
+body{
+    background-color: rgb(36, 33, 33);
+}
+th, td {	
+    border: 2px solid rgb(173, 121, 121);
+    border-collapse: separate;
+    border-spacing: 10px 10px;
+    color: white
+}
+
+table{	
+    border: 1px solid rgb(243, 243, 247);
+    border-collapse: separate;
+    border-spacing: 10px 10px;
+    border-style: dotted;
+    color: rgb(136, 31, 31)
+}
+
+h1, h2, h3{
+    color: white;
+    text-align: center;
+}
+
+input:invalid{border: 2px solid red;}
+input:valid{border: 2px solid black;}
+
+input{
+    text-align: center;
+    display: inline-block;
+    color: black;
+}
+
+form{
+
+    text-align: center;
+    color: white;
+}

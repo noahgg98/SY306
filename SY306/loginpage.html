@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--Noah Garcia-Galan-->
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href= "style.css">
+        <script type="text/javascript" src="./common_scripts.js"></script>
+        <title>Login page</title>
+    </head>
+      
+    <body onload="checkCookie();">
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col align-self-center">
+                    <h1>Sign in below to enter Chat Room</h1>
+                </div>
+            </div>
+
+            <div class="row justify-content-md-center">
+                <hr>
+                <form action="javascript:check_login()" role="form">
+                    <h3>Username and Password can only contain alpha, num or !?$</h3>
+                    <!---Get username and password to login-->
+                    <br>
+                    Enter your username <input type="text" id="userInput" name="user"
+                    required pattern="[a-zA-z0-9][a-zA-z0-9]*" onchange="checkInput()"><br>
+                    Enter your password <input type="password" id="passInput" name="pass"
+                    required pattern="[a-zA-z0-9][a-zA-z0-9|!|?|$]*" onchange="checkInput()"><br>
+
+                  
+                    <input type="submit" value="Log In" >
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="./signup.html">Register here!</a>
+                    
+                </form>
+            </div>
+        </div>
+
+        
+
+    </body>
+
+    <script type="text/javascript">
+        
+        /*
+        ensures that the input text is within pattern options before
+        allowing button to be enabled
+        */
+        function checkInput() {
+            
+            //grab variables for cookie
+            var user = document.getElementById("userInput").value;
+            var pass = document.getElementById("passInput").value;
+
+            //check if username and password are valid
+            //enable or disable button accordingly
+            if (valid(user) && valid(pass)) {
+                document.getElementById("Log in").disabled = false;
+               
+            }
+            else {
+                document.getElementById("Log in").disabled = true;
+            }
+        }
+        /*
+        checks the login parameters to see what pages user should be able 
+        to access
+        */
+        function check_login(){
+            
+            //insert captcha for extra layer of security
+            if( captch_impers()){
+                //grab variables for compare
+                var user = document.getElementById("userInput").value;
+                var pass = document.getElementById("passInput").value;
+
+                //temp cookie to run python script with
+                cookieStr = user + "-" + pass
+                setCookie('UserPass',cookieStr,12);
+
+                //change to check cookie
+                window.location.assign("../cgi-bin/check_cookie.py")
+            }else{window.location.assign("./loginpage.html");}
+
+
+            
+
+
+        }
+    </script>
+    
+    
+</html>

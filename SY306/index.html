@@ -1,0 +1,44 @@
+
+
+<!DOCTYPE html>
+<!--Noah Garcia-Galan-->
+<!---THIS PAGE IS JUST TO ALLOW FOR A NICE ENTRYWAY-------->
+<!---IT LINKES TO EITHER THE LOGIN PAGE OR THE RULES PAGE-->
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <title>GG Chat Room</title>
+    </head>
+      
+    <body>
+
+        <div class="container">
+            <div class="row">
+                <div class="col align-self-center">
+                    <h1>Welcome to my Message Board!</h1>
+                </div>
+            </div>
+
+            <div class="row justify-content-md-center">
+                <hr>
+                <p>
+                    Please make sure to read the <a href="./rules.html">rules</a> page and
+                    have fun.
+                </p> 
+                <button type="button" class="btn btn-primary" onclick="changePage();">ENTER!</button>
+            </div>
+        </div>
+
+        
+
+    </body>
+
+    <script type="text/javascript">
+        function changePage(){
+            window.location.assign("./loginpage.html")
+        }
+    </script>
+</html>

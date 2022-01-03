@@ -1,0 +1,303 @@
+<!DOCTYPE html> 
+<!--Noah Garcia-Galan-->
+<html lang="en"> 
+
+<head> 
+
+	<!-- Required meta tags -->
+
+	<meta charset="utf-8" /> 
+
+	<meta name="viewport" content="width=device-width, 
+
+			initial-scale=1, shrink-to-fit=no" /> 
+
+	<!-- Bootstrap CSS -->
+
+	<link rel="stylesheet" href= "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+		integrity= "sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" > 
+	<link rel="stylesheet" href= "style.css">
+	<script type="text/javascript" src="./common_scripts.js"></script>
+	<title> Chat Room </title> 
+
+
+</head> 
+
+<body onload="callback();checkInput()"> 
+	<div class="container" id="msgboard"> 
+
+		<h1>Chat Room!</h1> 
+		<button type="button" class="btn btn-primary" onclick="logO();">Log Out</button>
+		<br><br>
+		<h3>Input your message here</h3>
+		<form action="javascript:add_message()" role="form">
+			<textarea name="message_text" id="message_text" rows="5" cols="40"
+			onchange="checkInput()">Put your message here!
+			</textarea>
+			<br><br>
+			
+			<input type="submit" value="Add Message" id="submit">
+		</form>
+
+		<br><br><br>
+		<h2>Recent Posts</h2>
+			<br>
+			<table  id="list"></table>
+
+	</div> 
+
+
+	<script>
+		/*
+        ensures that the input text is within pattern options before
+        allowing button to be enabled
+        */
+        function checkInput() {
+			//good variable
+			good=1;
+            
+            //grab variables for cookie
+            var usermsg = document.getElementById("message_text").value;
+
+			//set length rquirement
+			if(usermsg.length>400){good=0;}
+
+			//remove all white space
+			usermsg = usermsg.replace(/\s/g,'');
+
+			//strings to check against
+			let alpha = "abcdefghijklmnopqrstuvwxyz";
+            let punct = "!?.";
+
+			
+
+
+			//iterate through usermsg
+			//check if valid string
+			for(var i=0; i<usermsg.split("").length;i++){
+				if(alpha.includes(usermsg[i].toLowerCase()) || punct.includes(usermsg[i].toLowerCase())){
+					good = good;
+				}
+				else{good=0;}
+			}
+
+            //check if username and password are valid
+            //enable or disable button accordingly
+            if (good==1) {
+                document.getElementById("submit").disabled = false;
+               
+            }
+            else {
+				alert("Bad Input, Must be less than 400 chars and only characters or '!?.' allowed");
+                document.getElementById("submit").disabled = true;
+            }
+        }
+		
+		function callback(){
+
+			//check to ensure user is able to access this page
+			preventWithCookie();
+
+			//set the interval for getting new messages
+			setInterval(buttonclickhandler,100);
+		}
+
+		function logO(){
+
+			//delete the cookie
+			setCookie("UserPass", "",-1);
+
+			//relocate to login page
+			window.location.assign("./loginpage.html");
+		}
+
+		function add_message(){
+
+			//insert captcha for extra layer of security
+            if( captch_impers()){
+          
+
+				//start new xhr object
+				const xh = new XMLHttpRequest();
+
+				mesg = document.getElementById("message_text").value;
+
+				//add message to database
+				xh.open("GET",`../cgi-bin/save_message.py?message=${mesg}`, true);
+
+				//update shown messages after message is added
+				xh.onload = function() {
+					var data = JSON.parse(xh.responseText);
+					console.log(data);
+					location.reload();
+				}
+				
+				xh.send();
+			}else{window.location.assign("./messageboard.html");}
+			
+		}
+
+		function del(msg, userid){
+			//start new xhr object
+			const x = new XMLHttpRequest();
+
+			//delete messages
+			x.open("GET",`../cgi-bin/remove_message.py?message=${msg}&id=${userid}`, true);
+
+			//update messages shown
+			x.onload = function() {
+				var data = JSON.parse(x.responseText);
+				console.log(data);
+				location.reload();
+			}
+			x.send();
+		}
+							
+
+		function buttonclickhandler() { 
+			
+			let rows = []
+			// Instantiate an new XHR Object 
+
+			const xhr = new XMLHttpRequest(); 
+
+			// Open an object (GET/POST, PATH, ASYN-TRUE/FALSE) 
+
+			xhr.open("POST", "../cgi-bin/add_message.py", true); 
+
+			// When response is ready - CALL BACK FUNCTION
+
+			xhr.onload = function () { 
+
+				if (this.status === 200) { 
+
+					console.log(this.responseText);
+
+					// Changing string data into JSON Object 
+
+					obj = JSON.parse(this.responseText);
+
+					// Getting the TABLE element 
+					var tableNode = document.getElementById("list"); 
+
+					//empty the list so it does not repeat items
+					if(tableNode.hasChildNodes()){
+						for(child in tableNode.childNodes){
+							tableNode.removeChild(child);
+						}
+					}
+					//
+					//create needed html elements
+					var trRowNode    = document.createElement("tr");
+					var trTitleNode  = document.createElement("td");
+					var trAuthorNode = document.createElement("td");
+					var trPagesNode  = document.createElement("td");
+
+		
+					//fill elements with json dump info
+					trTitleNode.innerHTML  = "Username ";
+					trAuthorNode.innerHTML = "Message ";
+					trPagesNode.innerHTML  = "Time Posted ";
+
+					//append to new list						
+					trRowNode.appendChild(trTitleNode);
+					trRowNode.appendChild(trAuthorNode);
+					trRowNode.appendChild(trPagesNode);
+					tableNode.appendChild(trRowNode);
+
+
+					for (key in obj) {  //LOOP THROUGH OBJECT
+
+						//create needed html elements
+						var rowNode    = document.createElement("tr");
+						var titleNode  = document.createElement("td");
+						var authorNode = document.createElement("td");
+						var pagesNode  = document.createElement("td");
+
+						//set input elements
+						var input       = document.createElement("button");
+						input.innerHTML = "DELETE"
+						input.type      = "button";
+						input.value     = "DELETE";
+						input.setAttribute("onclick","del(obj[key].Message, obj[key].ID);");
+						input.name      =  obj[key].ID;
+						
+
+						//fill elements with json dump info
+						titleNode.innerHTML  = obj[key].User;
+						authorNode.innerHTML = obj[key].Message;
+						pagesNode.innerHTML  = obj[key].Date;
+
+						//append to new list						
+						rowNode.appendChild(titleNode);
+						rowNode.appendChild(authorNode);
+						rowNode.appendChild(pagesNode);
+
+						//check if delete button should be added
+						let user = getCookie("UserPass").split("-")[0]
+						if(user == obj[key].User || user == "Admin" ){
+							rowNode.appendChild(input);
+						}
+						rows.unshift(rowNode);
+
+					} 
+
+					//display table with most recent first
+					rows.forEach((x,i)=>tableNode.appendChild(x));
+
+					
+
+				} 
+
+				else { 
+
+					console.log("Invalid data"); 
+
+				} 
+
+			} 
+
+			xhr.send();  //SEND AJAX REQUEST
+			
+
+		} 
+
+	</script> 
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+
+		integrity= 
+
+"sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+
+		crossorigin="anonymous"> 
+
+	</script> 	
+
+	<script src= 
+
+"https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+
+		integrity= 
+
+"sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+
+		crossorigin="anonymous"> 
+
+	</script> 	
+
+	<script src= 
+
+"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+
+		integrity= 
+
+"sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+
+		crossorigin="anonymous"> 
+
+	</script> 
+
+</body> 
+
+</html> 

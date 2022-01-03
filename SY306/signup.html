@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--Noah Garcia-Galan-->
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href= "style.css">
+        <script type="text/javascript" src="./common_scripts.js"></script>
+        <title>Signup page</title>
+    </head>
+      
+    <body onload="captch_impers();">
+
+        <div class="container">
+            <div class="row">
+                <div class="col align-self-center">
+                    <h1>Sign up below to enter chat Room</h1>
+                </div>
+            </div>
+
+            <div class="row justify-content-md-center">
+                <hr>
+                <h3>Username, Name and Password can only contain alpha, num or !?$</h3>
+                <!---Get needed user info to add to the database-->
+                <form action="./cgi-bin/add_user.py" method="post" role="form">
+                    Enter your name     <br><input type="text" name="name" id="nameInput" 
+                                        required pattern="[a-zA-z0-9][a-zA-z0-9]*"
+                                        onchange="checkInput()"><br>
+                    <br>Enter your username <br><input type="text" name="user" id="userInput"
+                                        required pattern="[a-zA-z0-9][a-zA-z0-9]*"
+                                        onchange="checkInput()"><br>
+                    <br>Enter your password <br><input type="password" name="pass" id="passInput"
+                                        required pattern="[a-zA-z0-9][a-zA-z0-9|!|?|$]*"
+                                        onchange="checkInput()"><br>
+                    <input type="submit" value="Sign Up" >
+                    
+                </form>
+                
+            </div>
+        </div>
+
+        
+
+    </body>
+
+    <script type="text/javascript">
+
+        /*
+        Validates and checks user input before allowing 
+        button to be enabled
+        */
+        function checkInput(){
+
+            //get info to check
+            var name = document.getElementById("name");
+            var user = document.getElementById("user");
+            var pass = document.getElementById("pass");
+
+            //disable or enable button based on validity
+            if(valid(name) && valid(user) && valid(pass)){
+                document.getElementById("Sign Up").disabled = false;
+            }
+            else{
+                document.getElementById("Sign Up").disabled = true;
+            }
+        }
+    </script>
+    
+ 
+    
+   
+</html>
